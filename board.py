@@ -2,17 +2,27 @@ class Board:
     board_rows = 4
     board_cols = 4 #4x4 board
 
+    class Tile:
+        def __init__(self,letter = None):
+            self.Letter = letter
+            self.Maybe = []
+
     def __init__(self):
-        self.board_state = [[None for i in range(self.board_cols)] for j in range(self.board_rows)]
+        self.board_state = [[self.Tile() for i in range(self.board_cols)] for j in range(self.board_rows)]
         self.state = []
+
+    def xy(self,pos):
+        return self.board_state[pos[1]][pos[0]]
 
     def show_board(self):
         for row in self.board_state:
             print_line = row
             for i in range(len(row)):
                 tile = print_line[i]
-                if tile == None:
+                if tile.Letter == None:
                     print_line[i] = ' '
+                else:
+                    print_line[i] = tile.Letter
             print(print_line)
 
     def update_board(self):
@@ -22,7 +32,7 @@ class Board:
         text = list(new_word[2])
 
         while len(text) > 0: #Repeat until word is done
-            self.board_state[pos[1]][pos[0]] = text.pop(0) #Remove first item of word
+            self.board_state[pos[1]][pos[0]] = self.Tile(text.pop(0)) #Remove first item of word
             if hori == True:
                 pos[0] += 1
             else: pos[1] += 1

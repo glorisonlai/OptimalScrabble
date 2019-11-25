@@ -55,112 +55,129 @@ def scores(letter):
         return 0
 
 class Dawg:
-        class Node:
-            def __init__(self,incoming = None,outgoing = None):
-                self.incoming = []
-                self.outgoing = []
+    class Node:
+        def __init__(self,incoming = None,outgoing = None):
+            self.incoming = []
+            self.outgoing = []
 
-        class Edge:
-            def __init__(self,letter,From = None,To = None):
-                self.From = From
-                self.To = To
-                self.Letter = letter
+    class Edge:
+        def __init__(self,letter,From = None,To = None):
+            self.From = From
+            self.To = To
+            self.Letter = letter
 
-        def __init__(self):
-            self.edge_list = []
-            Ns = self.Node()
-            Nf = self.Node()
-            self.node_list = [Ns,Nf]
+    def __init__(self):
+        self.edge_list = []
+        self.Ns = self.Node()
+        self.Nf = self.Node()
+        self.node_list = [self.Ns,self.Nf]
 
-        def dawg_generate(self):
-            with open('//Users/glorisonlai/Documents/GitHub/OptimalScrabble/dict.rtf') as dictionary:
-                for word in dictionary:
-                    assert type(word) == str
-                    word = word.split('\n')[0]
-                    word = ''.join(e for e in word if e.isalpha())
+    def dawg_generate(self):
+        with open('//Users/glorisonlai/Documents/GitHub/OptimalScrabble/dict.rtf') as dictionary:
+            for word in dictionary:
+                assert type(word) == str
+                word = word.split('\n')[0]
+                word = ''.join(e for e in word if e.isalpha())
+                word = word.lower()
 
-                    print(word)
+                word = list(word)
+                cont = False
+                start,end = self.node_list[0],self.node_list[1]
 
-                    word = list(word)
-                    cont = False
-                    start,end = self.node_list[0],self.node_list[1]
+                """
+                Get letters Front -> Back already in dawg from Ns, while length > 1
+                """
+                while len(word) > 1:
+                    out_letters = start.outgoing
+                    letter = word[0]
+                    
+                    for edge in out_letters:
+                        if letter == edge.Letter:
+                            cont = True
+                            word.pop(0)
+                            start = edge.To 
+                            break
+                    if cont:
+                        cont = False
+                        continue
+                    break
 
-                    """
-                    Get letters Front -> Back already in dawg from Ns, while length > 1
-                    """
-                    while len(word) > 1:
-                        out_letters = start.outgoing
-                        letter = word[0]
-                        
-                        for edge in out_letters:
-                            if letter == edge.Letter:
-                                cont = True
-                                word.pop(0)
-                                start = edge.To 
-                                break
-                        if cont:
-                            cont = False
-                            continue
-                        break
+                """
+                Get letters Back -> Front already in dawg from Nf, while length > 0
+                """
+                while len(word) > 1:
+                    in_letters = end.incoming
+                    letter = word[-1]
+                    
+                    for edge in in_letters:
+                        if letter == edge.Letter:
+                            cont = True
+                            word.pop()
+                            end = edge.From 
+                            break
+                    if cont:
+                        cont = False
+                        continue
+                    break
 
-                    """
-                    Get letters Back -> Front already in dawg from Nf, while length > 0
-                    """
-                    while len(word) > 1:
-                        in_letters = end.incoming
-                        letter = word[-1]
-                        
-                        for edge in in_letters:
-                            if letter == edge.Letter:
-                                cont = True
-                                word.pop()
-                                end = edge.From #What is the thing parsed
-                                break
-                        if cont:
-                            cont = False
-                            continue
-                        break
+                """
+                Put in nodes/edges from breaknode 0 -> 1
+                """
+                while len(word) > 1:
+                    new_node = self.Node()
+                    new_edge = self.Edge(word.pop(0),start,new_node)
 
-                    """
-                    Put in nodes/edges from breaknode 0 -> 1
-                    """
-                    while len(word) > 1:
-                        new_node = self.Node()
-                        new_edge = self.Edge(word.pop(0),start,new_node)
+                    new_node.incoming.append(new_edge)
+                    start.outgoing.append(new_edge)
+                    start = new_node
 
-                        new_node.incoming.append(new_edge)
+                    self.node_list.append(new_node)
+                    self.edge_list.append(new_edge)
+
+                if len(word) == 1:
+                    #Checksum for repeat words
+                    for edge in start.outgoing:
+                        if (word[0] == edge.Letter):
+                            cont = True
+                            break
+                    
+                    if not(cont):
+                        new_edge = self.Edge(word.pop(),start,end)
+                        end.incoming.append(new_edge)
                         start.outgoing.append(new_edge)
-                        start = new_node
 
-                        self.node_list.append(new_node)
                         self.edge_list.append(new_edge)
 
-                    if len(word) == 1:
-                        #Checksum for repeat words
-                        for edge in start.outgoing:
-                            if (word[0] == edge.Letter):
-                                cont = True
-                                break
-                        
-                        if not(cont):
-                            new_edge = self.Edge(word.pop(),start,end)
-                            end.incoming.append(new_edge)
-                            start.outgoing.append(new_edge)
+    def is_valid(self,string):
+        try:
+            if not string.isalpha():
+                raise TypeError
+            string = string.lower()
+            current = self.Ns
+            cont = False
+            for i in range(len(string)):
+                letter = string[i]
+                for edge in current.outgoing:
+                    if letter == edge.Letter:
+                        current = edge.To
+                        cont = True
+                        break
+                if cont:
+                    cont = False
+                    if current == self.Nf:
+                        break
+                    continue
+                else:
+                    return False
 
-                            self.edge_list.append(new_edge)
-
-                    # start = Ns
-                    # word = ''
-                    # while start != Nf:
-                    #     edge = start.outgoing[0]
-                    #     word += edge.Letter
-                    #     start = edge.To
-                    # print(word)
+            if current == self.Nf and i == len(string)-1:
+                return True
+            return False
+        
+        except TypeError:
+            print("invalid input: %s"%string)
 
 if __name__ == '__main__':
     Dictionary = Dawg()
     Dictionary.dawg_generate()
-    print('nodes = ' + str(len(Dictionary.node_list)))
-    print('edges = ' + str(len(Dictionary.edge_list)))
-    for edge in Dictionary.edge_list:
-        print(edge.Letter)
+    print(Dictionary.is_valid('stand'))
