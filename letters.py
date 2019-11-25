@@ -137,8 +137,8 @@ class Dawg:
 
                     if len(word) == 1:
                         #Checksum for repeat words
-                        for edge in end.incoming:
-                            if (word == edge.Letter):
+                        for edge in start.outgoing:
+                            if (word[0] == edge.Letter):
                                 cont = True
                                 break
                         

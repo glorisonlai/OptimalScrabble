@@ -14,7 +14,7 @@ class Generator:
         self.final_words = []
 
     def cross_check(self,board):
-        
+        pass
 
     def valid_anchors(self,board):
         anchors = []
@@ -27,9 +27,5 @@ class Generator:
 
 if __name__ == "__main__":
     game = Board()
-    game.update_state([ [(1,1),True,"at"],[(2,2),False,"be"] ])
+    game.update_state([ [(1,2),True,"at"],[(2,2),False,"be"] ])
     game.show_board()
-
-    rank =['b','c']
-    generate = Generator(rank)
-    generate.valid_anchors()
