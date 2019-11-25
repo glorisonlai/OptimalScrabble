@@ -73,62 +73,62 @@ class Dawg:
             self.node_list = [Ns,Nf]
 
         def dawg_generate(self):
-            with open('/Users/glorisonlai/PycharmProjects/Scrabble/dict.rtf') as dictionary:
+            with open('//Users/glorisonlai/Documents/GitHub/OptimalScrabble/dict.rtf') as dictionary:
                 for word in dictionary:
                     assert type(word) == str
                     word = word.split('\n')[0]
+                    word = ''.join(e for e in word if e.isalpha())
+
+                    print(word)
 
                     word = list(word)
-                    end = False
-                    breaknode = [self.node_list[0],self.node_list[1]]
+                    cont = False
+                    start,end = self.node_list[0],self.node_list[1]
 
                     """
                     Get letters Front -> Back already in dawg from Ns, while length > 1
                     """
-                    if len(word) > 1:
-                        start = breaknode[0]
+                    while len(word) > 1:
                         out_letters = start.outgoing
-
-                        while True:
-                            letter = word[0]
-                            for edge in out_letters:
-                                if letter == edge.Letter:
-                                    word.pop(0)
-                                    start = edge.To #What is the thing parsed
-                                    break
-                            breaknode[0] = start
-                            break
+                        letter = word[0]
+                        
+                        for edge in out_letters:
+                            if letter == edge.Letter:
+                                cont = True
+                                word.pop(0)
+                                start = edge.To 
+                                break
+                        if cont:
+                            cont = False
+                            continue
+                        break
 
                     """
                     Get letters Back -> Front already in dawg from Nf, while length > 0
                     """
-                    # if len(word) > 0:
-                    #     end = breaknode[1]
-                    #     in_letters = end.incoming
-
-                    #     while True:
-                    #         letter = word[-1]
-                    #         for edge in in_letters:
-                    #             if letter == edge.Letter:
-                    #                 word.pop()
-                    #                 end = edge.From #What is the thing parsed
-                    #                 break
-                    #         breaknode[1] = end
-                    #         break
-
+                    while len(word) > 1:
+                        in_letters = end.incoming
+                        letter = word[-1]
+                        
+                        for edge in in_letters:
+                            if letter == edge.Letter:
+                                cont = True
+                                word.pop()
+                                end = edge.From #What is the thing parsed
+                                break
+                        if cont:
+                            cont = False
+                            continue
+                        break
 
                     """
                     Put in nodes/edges from breaknode 0 -> 1
                     """
-                    start,end = breaknode[0],breaknode[1]
                     while len(word) > 1:
                         new_node = self.Node()
-                        new_edge = self.Edge(word.pop(0),start)
+                        new_edge = self.Edge(word.pop(0),start,new_node)
 
-                        new_edge.To = new_node
                         new_node.incoming.append(new_edge)
-                        new_edge.To = new_node
-
                         start.outgoing.append(new_edge)
                         start = new_node
 
@@ -136,11 +136,18 @@ class Dawg:
                         self.edge_list.append(new_edge)
 
                     if len(word) == 1:
-                        new_edge = self.Edge(word.pop(0),start,end)
-                        end.incoming.append(new_edge)
-                        start.outgoing.append(new_edge)
+                        #Checksum for repeat words
+                        for edge in end.incoming:
+                            if (word == edge.Letter):
+                                cont = True
+                                break
+                        
+                        if not(cont):
+                            new_edge = self.Edge(word.pop(),start,end)
+                            end.incoming.append(new_edge)
+                            start.outgoing.append(new_edge)
 
-                        self.edge_list.append(new_edge)
+                            self.edge_list.append(new_edge)
 
                     # start = Ns
                     # word = ''
