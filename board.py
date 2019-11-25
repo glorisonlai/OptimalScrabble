@@ -25,30 +25,43 @@ class Board:
                     print_line[i] = tile.Letter
             print(print_line)
 
-    def update_board(self):
-        new_word = self.state[-1]
+    def update_board(self,new_word):
         pos = list(new_word[0])
         hori = new_word[1]
         text = list(new_word[2])
 
-        while len(text) > 0: #Repeat until word is done
-            self.board_state[pos[1]][pos[0]] = self.Tile(text.pop(0)) #Remove first item of word
-            if hori == True:
-                pos[0] += 1
-            else: pos[1] += 1
+        try:
+            for i in range(len(text)):
+                if not(self.xy(pos).Letter in [None,text[i]]):
+                    raise Exception
+                if hori:
+                    pos[0] += 1
+                else: pos[1] += 1
+        except:
+            print('\"{}\" was not inputted correctly'.format(''.join(text)))
+            return
+        else:
+            pos = list(new_word[0])
+            while len(text) > 0: #Repeat until word is done
+                self.board_state[pos[1]][pos[0]] = self.Tile(text.pop(0)) #Remove first item of word
+                if hori:
+                    pos[0] += 1
+                else: pos[1] += 1
 
     def update_state(self,args): 
         for arg in args:
             try:
                 if not(type(arg[0]) == tuple and type(arg[1]) == bool and type(arg[2]) == str):
-                    raise TypeError("invalid arg types: %s" % [type(arg[0]),type(arg[1]),type(arg[2])])
-                self.state.append(arg)
-                self.update_board()
+                    raise TypeError
             except (TypeError):
-                pass
+                print("Invalid arg types: %s" % [type(arg[0]),type(arg[1]),type(arg[2])])
+                continue
+            if not(arg in self.state):
+                self.state.append(arg)
+                self.update_board(arg)
 
 
 if __name__ == "__main__":
     game = Board()
-    game.update_state([ [(1,1),True,"at"],[(1,1),False,"be"] ])
+    game.update_state([ [(1,1),True,"at"] ])
     game.show_board()

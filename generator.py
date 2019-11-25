@@ -1,5 +1,6 @@
 #from Collections import counter
 from board import Board
+import string
 import letters
 
 class Generator:
@@ -10,7 +11,10 @@ class Generator:
         self.final_words = []
 
     def cross_check(self,board):
-        pass
+        for y in range(height):
+            for x in range(width):
+                pos = [x,y]
+
 
     def valid_anchors(self,board):
         anchors = []
