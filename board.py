@@ -16,7 +16,7 @@ class Board:
 
     def show_board(self):
         for row in self.board_state:
-            print_line = row
+            print_line = list(row)
             for i in range(len(row)):
                 tile = print_line[i]
                 if tile.Letter == None:
@@ -65,3 +65,4 @@ if __name__ == "__main__":
     game = Board()
     game.update_state([ [(1,1),True,"at"] ])
     game.show_board()
+    print(game.xy([1,1]))
