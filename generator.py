@@ -53,8 +53,6 @@ class Generator:
                     else: self.board.xy([x,y]).Maybe = [e for e in options_hori if e in options_vert]
 
     def valid_anchors(self,board):
-        anchors = []
-        anchors += cross_check(board)
         for row in board:
             print(row)
 
