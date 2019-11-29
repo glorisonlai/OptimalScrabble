@@ -29,9 +29,13 @@ class Generator:
                         r_substring += self.board.xy([r,y]).Letter
                         r += 1
                     #check with list of alpha with dict and put valid words into options_hori
-                    for letter in list(string.ascii_lowercase):
-                        if self.dict.is_valid(l_substring+letter+r_substring):
-                            options_hori.append(l_substring+letter+r_substring)
+
+                    if l_substring == '' and r_substring == '':
+                        options_hori = None
+                    else:
+                        for letter in list(string.ascii_lowercase):
+                            if self.dict.is_valid(l_substring+letter+r_substring):
+                                options_hori.append(letter)
 
                     #repeat for vert
                     r = y-1
@@ -44,12 +48,20 @@ class Generator:
                         r_substring += self.board.xy([x,r]).Letter
                         r += 1
                     #check with list of alpha with dict and put valid words into options_hori
-                    for letter in list(string.ascii_lowercase):
-                        if self.dict.is_valid(l_substring+letter+r_substring):
-                            options_vert.append(l_substring+letter+r_substring)
 
-                    if len(options_hori) == 0 or len(options_vert) == 0:
-                        self.board.xy([x,y]).Maybe = max(options_hori,options_vert)
+                    if l_substring == '' and r_substring == '':
+                        options_vert = None
+                    else:  
+                        for letter in list(string.ascii_lowercase):
+                            if self.dict.is_valid(l_substring+letter+r_substring):
+                                options_vert.append(letter)
+
+                    if options_hori == None and options_vert == None:
+                        self.board.xy([x,y]).Maybe = []
+                    elif options_hori == None:
+                        self.board.xy([x,y]).Maybe = options_vert
+                    elif options_vert == None:
+                        self.board.xy([x,y]).Maybe = options_hori
                     else: self.board.xy([x,y]).Maybe = [e for e in options_hori if e in options_vert]
 
     def valid_anchors(self,board):
@@ -63,8 +75,8 @@ if __name__ == "__main__":
     rank = ['b','c']
     generate = Generator(rank)
     
-    #generate.board.update_state([ [(1,1),True,"at"],[(2,2),False,"be"] ])
-    generate.board.update_state([ [(1,1),True,"at"] ])
+    generate.board.update_state([ [(1,1),True,"at"],[(2,2),False,"be"] ])
+    #generate.board.update_state([ [(1,1),True,"at"] ])
     
     generate.board.show_board()
     generate.cross_check()

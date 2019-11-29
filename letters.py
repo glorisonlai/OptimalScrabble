@@ -87,20 +87,20 @@ class Dawg:
                 """
                 Get letters Front -> Back already in dawg from Ns, while length > 1
                 """
-                while len(word) > 1:
-                    out_letters = start.outgoing
-                    letter = word[0]
+                # while len(word) > 1:
+                #     out_letters = start.outgoing
+                #     letter = word[0]
                     
-                    for edge in out_letters:
-                        if letter == edge.Letter:
-                            cont = True
-                            word.pop(0)
-                            start = edge.To 
-                            break
-                    if cont:
-                        cont = False
-                        continue
-                    break
+                #     for edge in out_letters:
+                #         if letter == edge.Letter:
+                #             cont = True
+                #             word.pop(0)
+                #             start = edge.To 
+                #             break
+                #     if cont:
+                #         cont = False
+                #         continue
+                #     break
 
                 """
                 Get letters Back -> Front already in dawg from Nf, while length > 0
@@ -180,4 +180,4 @@ class Dawg:
 if __name__ == '__main__':
     Dictionary = Dawg()
     Dictionary.dawg_generate()
-    print(Dictionary.is_valid('stand'))
+    print(Dictionary.is_valid('ae'))
