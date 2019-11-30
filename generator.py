@@ -17,7 +17,7 @@ class Generator:
         for y in range(self.height):
             for x in range(self.width):
                 check_tile = self.board.xy([x,y])
-                if check_tile.Letter == None:     
+                if check_tile.Letter == None:
                     r,l_substring,r_substring = x-1,'',''
                     options_hori,options_vert = [],[]
                     #generate horizontal check
@@ -42,7 +42,7 @@ class Generator:
                     while (r in range(self.height) and self.board.xy([x,r]).Letter != None):
                         l_substring = self.board.xy([x,r]).Letter + l_substring
                         r -= 1
-                    
+
                     r = y+1
                     while (r in range(self.height) and self.board.xy([x,r]).Letter != None):
                         r_substring += self.board.xy([x,r]).Letter
@@ -51,13 +51,13 @@ class Generator:
 
                     if l_substring == '' and r_substring == '':
                         options_vert = None
-                    else:  
+                    else:
                         for letter in list(string.ascii_lowercase):
                             if self.dict.is_valid(l_substring+letter+r_substring):
                                 options_vert.append(letter)
 
                     if options_hori == None and options_vert == None:
-                        self.board.xy([x,y]).Maybe = []
+                        self.board.xy([x,y]).Maybe = None
                     elif options_hori == None:
                         self.board.xy([x,y]).Maybe = options_vert
                     elif options_vert == None:
@@ -74,10 +74,10 @@ class Generator:
 if __name__ == "__main__":
     rank = ['b','c']
     generate = Generator(rank)
-    
+
     generate.board.update_state([ [(1,1),True,"at"],[(2,2),False,"be"] ])
     #generate.board.update_state([ [(1,1),True,"at"] ])
-    
+
     generate.board.show_board()
     generate.cross_check()
 

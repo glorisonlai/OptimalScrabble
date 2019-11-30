@@ -51,7 +51,7 @@ def scores(letter):
         return 4
     if letter == 'z':
         return 10
-    if letter == 'blank':
+    if letter == '_':
         return 0
 
 class Dawg:
@@ -90,12 +90,12 @@ class Dawg:
                 # while len(word) > 1:
                 #     out_letters = start.outgoing
                 #     letter = word[0]
-                    
+
                 #     for edge in out_letters:
                 #         if letter == edge.Letter:
                 #             cont = True
                 #             word.pop(0)
-                #             start = edge.To 
+                #             start = edge.To
                 #             break
                 #     if cont:
                 #         cont = False
@@ -108,12 +108,12 @@ class Dawg:
                 while len(word) > 1:
                     in_letters = end.incoming
                     letter = word[-1]
-                    
+
                     for edge in in_letters:
                         if letter == edge.Letter:
                             cont = True
                             word.pop()
-                            end = edge.From 
+                            end = edge.From
                             break
                     if cont:
                         cont = False
@@ -140,7 +140,7 @@ class Dawg:
                         if (word[0] == edge.Letter):
                             cont = True
                             break
-                    
+
                     if not(cont):
                         new_edge = self.Edge(word.pop(),start,end)
                         end.incoming.append(new_edge)
@@ -173,7 +173,7 @@ class Dawg:
             if current == self.Nf and i == len(string)-1:
                 return True
             return False
-        
+
         except TypeError:
             print("invalid input: %s"%string)
 
