@@ -64,25 +64,33 @@ class Generator:
                         self.board.xy([x,y]).Maybe = options_hori
                     else: self.board.xy([x,y]).Maybe = [e for e in options_hori if e in options_vert]
 
-    def generate_hori_words(self, anchor):
-        pass
+    def generate_hori_words(self,letter,anchor):
+        row = anchor[1]
+        word,valid = '',False
+        for start in range(self.width):
+            for length in range(start,self.width):
+                pass
 
     def generate_vert_words(self,anchor):
         pass
 
-    def valid_anchors(self,board):
+     def rank_options(self,arr):
+        pass
+
+    def get_anchors(self,board):
         self.final_words = []
         for row in range(len(board[0])):
             for col in range(len(board)):
                 tile = self.board.xy([col,row])
-                if tile.Letter != None:
+                if tile.Letter != None: 
                     self.generate_hori_words(tile.Letter,[row,col])
                     self.generate_vert_words(tile.Letter,[row,col])
                 elif tile.Maybe != None:
                     for letter in tile.Maybe:
                         self.generate_hori_words(letter,[row,col])
                         self.generate_vert_words(letter,[row,col])
-        return self.rank_options(self.final_words)
+        self.rank_options(self.final_words)
+        return
 
 if __name__ == "__main__":
     rank = ['b','c']
@@ -94,4 +102,4 @@ if __name__ == "__main__":
     generate.board.show_board()
     generate.cross_check()
 
-    # generate.valid_anchors()
+    # generate.get_anchors()
