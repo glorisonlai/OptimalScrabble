@@ -148,36 +148,50 @@ class Dawg:
 
                         self.edge_list.append(new_edge)
 
+    def traverse_dawg(self,find_letter):
+        #recursively go through dawg with singular find.
+
     def is_valid(self,string):
+        count = 0
         try:
             if not string.isalpha():
                 raise TypeError
-            string = string.lower()
-            current = self.Ns
-            cont = False
-            for i in range(len(string)):
-                letter = string[i]
-                for edge in current.outgoing:
-                    if letter == edge.Letter:
-                        current = edge.To
-                        cont = True
-                        break
-                if cont:
-                    cont = False
-                    if current == self.Nf:
-                        break
-                    continue
-                else:
-                    return False
-
-            if current == self.Nf and i == len(string)-1:
-                return True
-            return False
-
         except TypeError:
             print("invalid input: %s"%string)
+            
+        string = string.lower()
+        options = [self.Ns]
+        cont = False
+        index = 0
+        
+        while index in range(len(string)):
+            count += 1
+            letter = string[index]
+            
+            while len(options) > 0:
+                current = options.pop()
+                for edge in current.outgoing:
+                    if letter == edge.Letter:
+                        options.append(edge.To)
+                        cont = True
+                break
+            if cont:
+                cont = False
+                print(self.Nf)
+                for thing in options:
+                    print(str(count) + " " + str(thing))
+                if self.Nf in options:
+                    break
+                else: index += 1
+                continue
+            else:
+                return False
+
+        if current == self.Nf and i == len(string)-1:
+            return True
+        return False
 
 if __name__ == '__main__':
     Dictionary = Dawg()
     Dictionary.dawg_generate()
-    print(Dictionary.is_valid('ae'))
+    print(Dictionary.is_valid("ab"))

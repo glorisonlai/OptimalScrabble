@@ -2,6 +2,7 @@ from letters import *
 from board import Board
 import string
 import letters
+import copy
 
 class Generator:
     width, height = Board.board_cols, Board.board_rows
@@ -63,13 +64,48 @@ class Generator:
                     elif options_vert == None:
                         self.board.xy([x,y]).Maybe = options_hori
                     else: self.board.xy([x,y]).Maybe = [e for e in options_hori if e in options_vert]
+                else:
+                    self.board.xy([x,y]).Maybe = None
+
+    def extend_hori_words(self,word,stack,hand,pos):
+        words,stack = [],[]
+        if self.dict.is_valid(word):
+            words.append(word)
+        if board.xy(length,row).Letter != None:
+                stack.append(board.xy(length,row).Letter)
+            elif board.xy(length,row).Maybe != None:
+                stack.append(e for e in board.xy(length,row).Maybe)
+            else:
+                stack.append(e for e in hand)
+        
+
+        return words+self.extend_hori_words(word,new_stack)
+
 
     def generate_hori_words(self,letter,anchor):
-        row = anchor[1]
+        row,anchor_col = anchor[0],anchor[1]
         word,valid = '',False
-        for start in range(self.width):
+        for start in range(anchor_col):
+            length = start
+            hand = copy.copy(self.rank)
+            if board.xy(length,row).Letter != None:
+                stack.append(board.xy(length,row).Letter)
+            elif board.xy(length,row).Maybe != None:
+                stack.append(e for e in board.xy(length,row).Maybe)
+            else:
+                stack.append(e for e in hand)
+            while len(stack) > 0:
+                if board.xy(length,row)
+
+
             for length in range(start,self.width):
-                pass
+                #()
+                for hand_letter in self.rank:
+                    hand = copy.copy(self.rank)
+                    
+                    if self.dict.is_valid(word):
+                        self.final_words.append( [(start,row),True,word] )
+                
 
     def generate_vert_words(self,anchor):
         pass
