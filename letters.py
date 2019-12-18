@@ -77,11 +77,11 @@ class Dawg:
             for word in dictionary:
                 try:
                     assert type(word) == str
+                    word = word.split('\n')[0]
+                    assert word.isalpha()
+                    word = word.lower()
                 except AssertionError:
                     print(type(word),word)
-                word = word.split('\n')[0]
-                word = ''.join(e for e in word if e.isalpha())
-                word = word.lower()
 
                 word = list(word)
                 cont = False
@@ -140,7 +140,7 @@ class Dawg:
                 if len(word) == 1:
                     #Checksum for repeat words
                     for edge in start.outgoing:
-                        if (word[0] == edge.Letter):
+                        if (word[0] == edge.Letter) and (edge.To == end):
                             cont = True
                             break
 
@@ -152,14 +152,12 @@ class Dawg:
                         self.edge_list.append(new_edge)
 
     def traverse_dawg(self,index,string,node):
-        print(node,self.Nf)
         if node == self.Nf and index == len(string):
             return True
         elif index >= len(string):
             return False
         else:    
             for edge in node.outgoing:
-                print(index,edge.Letter)
                 if edge.Letter == string[index]:
                     if self.traverse_dawg(index+1,string,edge.To):
                         return True
