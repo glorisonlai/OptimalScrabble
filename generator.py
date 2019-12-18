@@ -71,12 +71,13 @@ class Generator:
         words,stack = [],[]
         if self.dict.is_valid(word):
             words.append(word)
+        
         if board.xy(length,row).Letter != None:
-                stack.append(board.xy(length,row).Letter)
-            elif board.xy(length,row).Maybe != None:
-                stack.append(e for e in board.xy(length,row).Maybe)
-            else:
-                stack.append(e for e in hand)
+            stack.append(board.xy(length,row).Letter)
+        elif board.xy(length,row).Maybe != None:
+            stack.append(e for e in board.xy(length,row).Maybe)
+        else:
+            stack.append(e for e in hand)
         
 
         return words+self.extend_hori_words(word,new_stack)
@@ -95,7 +96,8 @@ class Generator:
             else:
                 stack.append(e for e in hand)
             while len(stack) > 0:
-                if board.xy(length,row)
+                if board.xy(length,row):
+                    pass
 
 
             for length in range(start,self.width):
@@ -110,7 +112,7 @@ class Generator:
     def generate_vert_words(self,anchor):
         pass
 
-     def rank_options(self,arr):
+    def rank_options(self,arr):
         pass
 
     def get_anchors(self,board):

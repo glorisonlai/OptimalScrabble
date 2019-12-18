@@ -75,7 +75,10 @@ class Dawg:
     def dawg_generate(self):
         with open('//Users/glorisonlai/Documents/GitHub/OptimalScrabble/dict.rtf') as dictionary:
             for word in dictionary:
-                assert type(word) == str
+                try:
+                    assert type(word) == str
+                except AssertionError:
+                    print(type(word),word)
                 word = word.split('\n')[0]
                 word = ''.join(e for e in word if e.isalpha())
                 word = word.lower()
@@ -148,50 +151,33 @@ class Dawg:
 
                         self.edge_list.append(new_edge)
 
-    def traverse_dawg(self,find_letter):
-        #recursively go through dawg with singular find.
+    def traverse_dawg(self,index,string,node):
+        print(node,self.Nf)
+        if node == self.Nf and index == len(string):
+            return True
+        elif index >= len(string):
+            return False
+        else:    
+            for edge in node.outgoing:
+                print(index,edge.Letter)
+                if edge.Letter == string[index]:
+                    if self.traverse_dawg(index+1,string,edge.To):
+                        return True
 
     def is_valid(self,string):
-        count = 0
         try:
             if not string.isalpha():
                 raise TypeError
         except TypeError:
-            print("invalid input: %s"%string)
+            print("invalid input: %s" % string)
             
         string = string.lower()
-        options = [self.Ns]
-        cont = False
         index = 0
-        
-        while index in range(len(string)):
-            count += 1
-            letter = string[index]
-            
-            while len(options) > 0:
-                current = options.pop()
-                for edge in current.outgoing:
-                    if letter == edge.Letter:
-                        options.append(edge.To)
-                        cont = True
-                break
-            if cont:
-                cont = False
-                print(self.Nf)
-                for thing in options:
-                    print(str(count) + " " + str(thing))
-                if self.Nf in options:
-                    break
-                else: index += 1
-                continue
-            else:
-                return False
 
-        if current == self.Nf and i == len(string)-1:
-            return True
-        return False
+        return bool(self.traverse_dawg(index,string,self.Ns))
 
 if __name__ == '__main__':
     Dictionary = Dawg()
     Dictionary.dawg_generate()
-    print(Dictionary.is_valid("ab"))
+    print(Dictionary.Ns.outgoing)
+    print(Dictionary.is_valid("a"))
