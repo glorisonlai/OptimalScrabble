@@ -18,9 +18,9 @@ class Generator:
         for y in range(self.height):
             for x in range(self.width):
                 check_tile = self.board.xy([x,y])
+                options_hori,options_vert = [],[]
                 if check_tile.Letter == None:
                     r,l_substring,r_substring = x-1,'',''
-                    options_hori,options_vert = [],[]
                     #generate horizontal check
                     while (r in range(self.width) and self.board.xy([r,y]).Letter != None):
                         l_substring = self.board.xy([r,y]).Letter + l_substring
@@ -39,7 +39,7 @@ class Generator:
                                 options_hori.append(letter)
 
                     #repeat for vert
-                    r = y-1
+                    r,l_substring,r_substring = y-1,'',''
                     while (r in range(self.height) and self.board.xy([x,r]).Letter != None):
                         l_substring = self.board.xy([x,r]).Letter + l_substring
                         r -= 1
@@ -66,6 +66,7 @@ class Generator:
                     else: self.board.xy([x,y]).Maybe = [e for e in options_hori if e in options_vert]
                 else:
                     self.board.xy([x,y]).Maybe = None
+                print(str([x,y]) + ', ' + str(self.board.xy([x,y]).Maybe))
 
     def extend_hori_words(self,word,stack,hand,pos):
         words,stack = [],[]
@@ -101,7 +102,6 @@ class Generator:
 
 
             for length in range(start,self.width):
-                #()
                 for hand_letter in self.rank:
                     hand = copy.copy(self.rank)
                     

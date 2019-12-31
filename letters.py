@@ -73,7 +73,7 @@ class Dawg:
         self.node_list = [self.Ns,self.Nf]
 
     def dawg_generate(self):
-        with open('//Users/glorisonlai/Documents/GitHub/OptimalScrabble/dict.rtf') as dictionary:
+        with open('dict.rtf') as dictionary:
             for word in dictionary:
                 try:
                     assert type(word) == str
@@ -177,5 +177,3 @@ class Dawg:
 if __name__ == '__main__':
     Dictionary = Dawg()
     Dictionary.dawg_generate()
-    print(Dictionary.Ns.outgoing)
-    print(Dictionary.is_valid("a"))
