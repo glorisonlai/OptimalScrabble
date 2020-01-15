@@ -12,7 +12,37 @@ class Board:
         self.state = []
 
     def xy(self,pos):
-        return self.board_state[pos[1]][pos[0]]
+        try:
+            return self.board_state[pos[1]][pos[0]]
+        except (IndexError):
+            return False
+    
+    def letter(self,pos):
+        tile = self.xy(pos)
+        if tile:
+            return tile.Letter
+        return False
+
+    def adj(self,pos,orient):
+        if orient == 'vert':
+            return not(self.letter([pos[0],pos[1]-1]) and self.letter([pos[0],pos[1]+1]))
+        if orient == 'vertl':
+            return not(self.letter([pos[0],pos[1]-1]))
+        if orient == 'vertr':
+            return not(self.letter([pos[0],pos[1]+1]))
+        if orient == 'hori':
+            return not(self.letter([pos[0]-1,pos[1]]) and self.letter([pos[0]+1,pos[1]]))
+        if orient == 'horil':
+            return not(self.letter([pos[0]-1,pos[1]]))
+        if orient == 'vertr':
+            return not(self.letter([pos[0]+1,pos[1]]))
+    
+
+    def maybe(self,pos):
+        tile = self.xy(pos)
+        if tile:
+            return tile.Maybe
+        return False
 
     def show_board(self):
         for row in self.board_state:
@@ -63,6 +93,5 @@ class Board:
 
 if __name__ == "__main__":
     game = Board()
-    game.update_state([ [(1,1),True,"at"] ])
+    game.update_state([ [(1,1),True,"atb"],[(1,1),False,"at"] ])
     game.show_board()
-    print(game.xy([1,1]))
