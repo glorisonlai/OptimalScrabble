@@ -23,19 +23,14 @@ class Board:
             return tile.Letter
         return False
 
-    def adj(self,pos,orient):
-        if orient == 'vert':
-            return not(self.letter([pos[0],pos[1]-1]) and self.letter([pos[0],pos[1]+1]))
-        if orient == 'vertl':
-            return not(self.letter([pos[0],pos[1]-1]))
-        if orient == 'vertr':
-            return not(self.letter([pos[0],pos[1]+1]))
-        if orient == 'hori':
-            return not(self.letter([pos[0]-1,pos[1]]) and self.letter([pos[0]+1,pos[1]]))
-        if orient == 'horil':
-            return not(self.letter([pos[0]-1,pos[1]]))
-        if orient == 'vertr':
-            return not(self.letter([pos[0]+1,pos[1]]))
+    def space_up(self,pos):
+        return not(self.letter([pos[0],pos[1]-1]))
+    def space_down(self,pos):
+        return not(self.letter([pos[0],pos[1]+1]))
+    def space_left(self,pos):
+        return not(self.letter([pos[0]-1,pos[1]]))
+    def space_right(self,pos):
+        return not(self.letter([pos[0]+1,pos[1]]))
     
 
     def maybe(self,pos):

@@ -89,19 +89,20 @@ class Generator:
 
 
     def generate_hori_words(self,letter,anchor,rank):
-        col,anchor_row = anchor[0],anchor[1]
+        col,row = anchor[0],anchor[1]
         board = self.board
+        #Either attach to word, or generate pre-words
+        if space_left(anchor):
         #Create all valid pre-words
-        for length in range(col,-1,-1):
-            word,valid = letter,False
-            start = length
-            pos = [start,anchor_row]
-            if board.adj(pos,'horil'): #start with space for pre word
-                hand = copy.copy(rank)
-                while start in range(col):
-            elif start == col: #start with no space:
-                
-            else: break
+            for length in range(col,-1,-1):
+                start,valid = length,False
+                pos = [start,row]
+                if board.space_left(pos) or start == 0: #starts with space for pre word
+                    hand = copy.copy(rank)
+                    while start in range(col):
+                        
+
+                else: break
 
         #     if board.xy(length,row).Letter != None:
         #         stack.append(board.xy(length,row).Letter)
@@ -135,13 +136,13 @@ class Generator:
                 pos = [x,y]
                 tile = board.xy([x,y])
                 #tile is letter
-                if board.adj('hori'): #Only if next tile is free
+                if (board.space_left(pos) or board.space_right(pos)): #Only if next tile is free
                     if (tile.Letter): 
                         self.generate_hori_words(tile.Letter,pos,self.rank)
                     elif tile.Maybe != None:
                         for letter in tile.Maybe:
                             self.generate_hori_words(letter,pos,self.rank)
-                if board.adj('vert'):
+                if (board.space_up(pos) or board.space_down(pos)):
                     if (tile.Letter):
                         self.generate_vert_words(tile.Letter,pos,self.rank)
                     elif tile.Maybe:
