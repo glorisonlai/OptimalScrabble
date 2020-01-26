@@ -23,11 +23,11 @@ class Generator:
                 if check_tile.Letter == None:
                     r,l_substring,r_substring = x-1,'',''
                     #generate horizontal check
-                    while (r in range(height) and board.xy([r,y]).Letter != None):
-                        l_substring = board.xy([r,y]).Letter + l_substring
+                    while board.space_left([r,y]):
+                        l_substring = board.letter([r,y]) + l_substring
                         r -= 1
                     r = x+1
-                    while (r in range(height) and board.xy([r,y]).Letter != None):
+                    while board.space_right([r,y]):
                         r_substring += board.xy([r,y]).Letter
                         r += 1
                     #check with list of alpha with dict and put valid words into options_hori
