@@ -90,38 +90,38 @@ class Dawg:
                 """
                 Get letters Front -> Back already in dawg from Ns, while length > 1
                 """
-                # while len(word) > 1:
-                #     out_letters = start.outgoing
-                #     letter = word[0]
-
-                #     for edge in out_letters:
-                #         if letter == edge.Letter:
-                #             cont = True
-                #             word.pop(0)
-                #             start = edge.To
-                #             break
-                #     if cont:
-                #         cont = False
-                #         continue
-                #     break
-
-                """
-                Get letters Back -> Front already in dawg from Nf, while length > 0
-                """
                 while len(word) > 1:
-                    in_letters = end.incoming
-                    letter = word[-1]
+                    out_letters = start.outgoing
+                    letter = word[0]
 
-                    for edge in in_letters:
+                    for edge in out_letters:
                         if letter == edge.Letter:
                             cont = True
-                            word.pop()
-                            end = edge.From
+                            word.pop(0)
+                            start = edge.To
                             break
                     if cont:
                         cont = False
                         continue
                     break
+
+                """
+                Get letters Back -> Front already in dawg from Nf, while length > 0
+                """
+                # while len(word) > 1:
+                #     in_letters = end.incoming
+                #     letter = word[-1]
+
+                #     for edge in in_letters:
+                #         if letter == edge.Letter:
+                #             cont = True
+                #             word.pop()
+                #             end = edge.From
+                #             break
+                #     if cont:
+                #         cont = False
+                #         continue
+                #     break
 
                 """
                 Put in nodes/edges from breaknode 0 -> 1
@@ -177,3 +177,5 @@ class Dawg:
 if __name__ == '__main__':
     Dictionary = Dawg()
     Dictionary.dawg_generate()
+    print("nodes", len(Dictionary.node_list))
+    print("edges", len(Dictionary.edge_list))
