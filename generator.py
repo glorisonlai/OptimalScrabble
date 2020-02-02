@@ -23,12 +23,12 @@ class Generator:
                 if check_tile.Letter == None:
                     r,l_substring,r_substring = x-1,'',''
                     #generate horizontal check
-                    while (r in range(height) and board.xy([r,y]).Letter != None):
-                        l_substring = board.xy([r,y]).Letter + l_substring
+                    while board.space_left([r,y]):
+                        l_substring = board.letter([r,y]) + l_substring
                         r -= 1
                     r = x+1
-                    while (r in range(height) and board.xy([r,y]).Letter != None):
-                        r_substring += board.xy([r,y]).Letter
+                    while board.space_right([r,y]):
+                        r_substring += board.letter([r,y])
                         r += 1
                     #check with list of alpha with dict and put valid words into options_hori
 
@@ -41,13 +41,13 @@ class Generator:
 
                     #repeat for vert
                     r,l_substring,r_substring = y-1,'',''
-                    while (r in range(height) and board.xy([x,r]).Letter != None):
-                        l_substring = board.xy([x,r]).Letter + l_substring
+                    while board.space_up([x,r]):
+                        l_substring = board.letter([x,r]) + l_substring
                         r -= 1
 
                     r = y+1
-                    while (r in range(height) and board.xy([x,r]).Letter != None):
-                        r_substring += board.xy([x,r]).Letter
+                    while board.space_down([x,r]):
+                        r_substring += board.letter([x,r])
                         r += 1
                     #check with list of alpha with dict and put valid words into options_hori
 
@@ -92,7 +92,7 @@ class Generator:
         col,row = anchor[0],anchor[1]
         board = self.board
         #Either attach to word, or generate pre-words
-        if space_left(anchor):
+        if board.space_left(anchor):
         #Create all valid pre-words
             for length in range(col,-1,-1):
                 start,valid = length,False
@@ -100,8 +100,10 @@ class Generator:
                 if board.space_left(pos) or start == 0: #starts with space for pre word
                     hand = copy.copy(rank)
                     while start in range(col):
-                        
-
+                        for tile in hand:
+                            if tile in board.maybe(pos):
+                                word = tile
+                                extend_hori_words(letter, anchor, hand.remove(tile), word)
                 else: break
 
         #     if board.xy(length,row).Letter != None:
