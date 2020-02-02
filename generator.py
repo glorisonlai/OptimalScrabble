@@ -134,7 +134,7 @@ class Generator:
         for y in range(self.height):
             for x in range(self.width):
                 pos = [x,y]
-                tile = board.xy([x,y])
+                tile = board.xy(pos)
                 #tile is letter
                 if (board.space_left(pos) or board.space_right(pos)): #Only if next tile is free
                     if (tile.Letter): 
