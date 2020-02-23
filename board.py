@@ -24,12 +24,20 @@ class Board:
         return False
 
     def space_up(self,pos):
+        if pos[1] == 0:
+            return True
         return not(self.letter([pos[0],pos[1]-1]))
     def space_down(self,pos):
+        if pos[1] == self.board_rows-1:
+            return True
         return not(self.letter([pos[0],pos[1]+1]))
     def space_left(self,pos):
+        if pos[0] == 0:
+            return True
         return not(self.letter([pos[0]-1,pos[1]]))
     def space_right(self,pos):
+        if pos[0] == self.board_cols-1:
+            return True
         return not(self.letter([pos[0]+1,pos[1]]))
     
 

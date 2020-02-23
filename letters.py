@@ -174,8 +174,27 @@ class Dawg:
 
         return bool(self.traverse_dawg(index,string,self.Ns))
 
+    def partial_dawg(self,string,node):
+        if len(string) == 0:
+            return True
+        else:    
+            for edge in node.outgoing:
+                if edge.Letter == string[index]:
+                    if self.partial_dawg(string[1:],edge.To):
+                        return True
+                
+    def partial_valid(self,string):
+        try:
+            if not string.isalpha():
+                raise TypeError
+        except TypeError:
+            print("invalid input: %s" % string)
+            
+        string = string.lower()
+        index = 0
+
+        return bool(self.partial_dawg(index,string,self.Ns))
+
 if __name__ == '__main__':
     Dictionary = Dawg()
     Dictionary.dawg_generate()
-    print("nodes", len(Dictionary.node_list))
-    print("edges", len(Dictionary.edge_list))

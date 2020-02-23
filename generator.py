@@ -4,7 +4,48 @@ import string
 import letters
 import copy
 
+# def generate_combinations_aux(word,ls,length):
+#     if length == 0:
+#         return word
+    
+# def generate_combinations(ls,length):
+    if length == 0:
+        return [""]
+    result = []
+    for item in ls:
+        result += generate_combinations_aux(item,ls.remove(item),length-1)
+
+def permutations(iterable, r=None):
+    # permutations('ABCD', 2) --> AB AC AD BA BC BD CA CB CD DA DB DC
+    # permutations(range(3)) --> 012 021 102 120 201 210
+    pool = tuple(iterable) #immutable
+    n = len(pool) 
+    r = n if r is None else r #length of yield
+    if r > n: 
+        return
+    
+    indices = list(range(n)) #Field mapper
+    cycles = list(range(n, n-r, -1)) #No. cycles left for i'th int
+    yield tuple(pool[i] for i in indices[:r]) #print original config
+    
+    while n: #if arr len > 0
+        for i in reversed(range(r)): #Change back elements first
+
+            cycles[i] -= 1
+            if cycles[i] == 0:
+                indices[i:] = indices[i+1:] + indices[i:i+1] #Swap positions
+                cycles[i] = n - i #Reset no. of cycles left for i'th int
+            else:
+                j = cycles[i]
+                indices[i], indices[-j] = indices[-j], indices[i]
+                print(indices)
+                yield tuple(pool[i] for i in indices[:r])
+                break
+        else:
+            return
+
 class Generator:
+    dict_tree = Dawg.dawg_generate
     width, height = Board.board_cols, Board.board_rows
 
     def __init__(self,letters):
@@ -17,7 +58,7 @@ class Generator:
     def cross_check(self,board):
         width,height = self.width, self.height
         for y in range(height):
-            for x in range(height):
+            for x in range(width):
                 check_tile = board.xy([x,y])
                 options_hori,options_vert = [],[]
                 if check_tile.Letter == None:
@@ -68,62 +109,59 @@ class Generator:
                     else: board.xy([x,y]).Maybe = [e for e in options_hori if e in options_vert]
                 else:
                     board.xy([x,y]).Maybe = None
-                #print(str([x,y]) + ', ' + str(board.xy([x,y]).Maybe))
 
-    def extend_hori_words(self,word,stack,hand,pos):
-        pass
-        # board = self.board
-        # words,stack = [],[]
-        # if self.dict.is_valid(word):
-        #     words.append(word)
-        
-        # if board.xy(length,row).Letter != None:
-        #     stack.append(board.xy(length,row).Letter)
-        # elif board.xy(length,row).Maybe != None:
-        #     stack.append(e for e in board.xy(length,row).Maybe)
-        # else:
-        #     stack.append(e for e in hand)
-        
+    # def create_pre_words(col,row,rank):
+    #     for length in range(col,-1,-1):
+    #             start,valid = length,False
+    #             pos = [start,row]
+    #             if board.space_left(pos) or start == 0: #does not connect to letters on its left
+    #                 hand = copy.copy(rank)
+    #                 while start in range(col): #includes no preword 
+    #                     max_preword_len = col-start
+    #                     #Generate all combinations of self.rank
+    #                     for preword_len in range(max_preword_len+1):
+    #                         prewords += (e for e in permutations(hand,preword_len))
+    #             else: break
 
-        # return words+self.extend_hori_words(word,new_stack)
+    def finish_word(self,anchor,word,rank):
+        board = self.board
 
+    def create_pre_words(self,start,goal,rank,letter,word):
+        if start[0] == goal[0]:
+            word = word + letter
+            if self.dict_tree.partial_valid("word"):
+                return self.finish_word(anchor,word,rank)
+            else:
+                return []
+        else:
+            for tile of rank:
+                if self.dict_tree.partial_valid(word+tile):
+                    col,row = start[0]-1,start[1]
+                    self.create_pre_words([col,row],goal,rank.remove(tile),letter,word+tile)
 
+    #DICTIONARY MUST EXIST
     def generate_hori_words(self,letter,anchor,rank):
         col,row = anchor[0],anchor[1]
         board = self.board
+        prewords = []
         #Either attach to word, or generate pre-words
-        if board.space_left(anchor):
-        #Create all valid pre-words
-            for length in range(col,-1,-1):
-                start,valid = length,False
-                pos = [start,row]
-                if board.space_left(pos) or start == 0: #starts with space for pre word
-                    hand = copy.copy(rank)
-                    while start in range(col):
-                        for tile in hand:
-                            if tile in board.maybe(pos):
-                                word = tile
-                                extend_hori_words(letter, anchor, hand.remove(tile), word)
-                else: break
+        if board.space_left(anchor): #Create all valid pre-words, and for each, finish word
+            start_col, start = col, anchor
+            while board.space_left(start):
+                prewords += self.create_pre_words(start,anchor,rank,letter,"")
+                start_col -= 1
+                start = [start_col,row]
+        else: #preword exists
+            start_col,preword = col,""
+            while not(board.space_left([start_col,row])):
+                start_col -= 1
+                preword = board.Letter([start_col,row]) + preword
+            word = preword + letter
+            if dict_tree.partial_valid(word):
+                self.finish_word(anchor,word,rank)
+            else:
+                return
 
-        #     if board.xy(length,row).Letter != None:
-        #         stack.append(board.xy(length,row).Letter)
-        #     elif board.xy(length,row).Maybe != None:
-        #         stack.append(e for e in board.xy(length,row).Maybe)
-        #     else:
-        #         stack.append(e for e in hand)
-        #     while len(stack) > 0:
-        #         if board.xy(length,row):
-        #             pass
-
-
-        #     for length in range(start,self.width):
-        #         for hand_letter in self.rank:
-        #             hand = copy.copy(self.rank)
-                    
-        #             if self.dict.is_valid(word):
-        #                 self.final_words.append( [(start,row),True,word] )
-                
 
     def generate_vert_words(self,letter,anchor,rank):
         pass
@@ -143,13 +181,15 @@ class Generator:
                         self.generate_hori_words(tile.Letter,pos,self.rank)
                     elif tile.Maybe != None:
                         for letter in tile.Maybe:
-                            self.generate_hori_words(letter,pos,self.rank)
+                            if letter in self.rank:
+                                self.generate_hori_words(letter,pos,self.rank.remove(letter))
                 if (board.space_up(pos) or board.space_down(pos)):
                     if (tile.Letter):
                         self.generate_vert_words(tile.Letter,pos,self.rank)
                     elif tile.Maybe:
                         for letter in tile.Maybe:
-                            self.generate_vert_words(letter,pos,self.rank)
+                            if letter in self.rank:
+                                self.generate_vert_words(letter,pos,self.rank.remove(letter))
         self.rank_options(self.final_words)
         print(self.final_words)
         return
