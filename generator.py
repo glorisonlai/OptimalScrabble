@@ -125,6 +125,7 @@ class Generator:
 
     def finish_word(self,anchor,word,rank):
         board = self.board
+        
 
     def create_pre_words(self,start,goal,rank,letter,word):
         if start[0] == goal[0]:
