@@ -179,7 +179,7 @@ class Dawg:
             return True
         else:    
             for edge in node.outgoing:
-                if edge.Letter == string[index]:
+                if edge.Letter == string[0]:
                     if self.partial_dawg(string[1:],edge.To):
                         return True
                 
@@ -191,9 +191,8 @@ class Dawg:
             print("invalid input: %s" % string)
             
         string = string.lower()
-        index = 0
 
-        return bool(self.partial_dawg(index,string,self.Ns))
+        return bool(self.partial_dawg(string,self.Ns))
 
 if __name__ == '__main__':
     Dictionary = Dawg()
